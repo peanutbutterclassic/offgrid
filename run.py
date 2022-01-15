@@ -1,17 +1,34 @@
 import random
 import time
 
-def battle_intro():
-    print("----------Welcome to BattleScrabble!----------")
-    name = input("What's your name? \n")
-    age = int(input("What's your age: \n"))
-    if age >= 18:
-        print("You are eligible to enter the battlefield.")
-    else:
-        print(f"Hello {name.capitalize()}, aren't you too young.")
+# Global variable for grid
+grid = [[]]
+# Global variable for grid size
+grid_size = 10
+# Global variable for number of ships to place
+num_of_ships = 3
+# Global variable for bullets left
+bullets_left = 50
+# Global variable for game over
+game_over = False
+# Global variable for number of ships sunk
+num_of_ships_sunk = 0
+# Global variable for ship positions
+ship_positions = [[]]
+# Global variable for alphabet
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-def enter_battle_perimeter():
-    print("YOU ARE ENTERING THE BATTLE PERIMETER!\n")
+# def battle_intro():
+#     print("----------Welcome to BattleScrabble!----------")
+#     name = input("What's your name? \n")
+#     age = int(input("What's your age: \n"))
+#     if age >= 18:
+#         print("You are eligible to enter the battlefield.")
+#     else:
+#         print(f"Hello {name.capitalize()}, aren't you too young.")
+
+# def enter_battle_perimeter():
+#     print("YOU ARE ENTERING THE BATTLE PERIMETER!\n")
 
 def validate_grid_and_place_ship(start_row, end_row, start_col, end_col):
     """
@@ -52,7 +69,7 @@ def try_to_place_ship_on_grid(row, col, direction, length):
             return False
         start_row = row - length + 1
 
-    elif direction = "down"
+    elif direction == "down":
         if row + length >= grid_size:
             return False 
         end_row = row + length
@@ -116,29 +133,109 @@ def print_grid():
         print(str(i), end=" ")
     print("")
 
-# Global variable for grid
-grid = [[]]
-# Global variable for grid size
-grid_size = 10
-# Global variable for number of ships to place
-num_of_ships = 3
-# Global variable for bullets left
-bullets_left = 50
-# Global variable for game over
-game_over = False
-# Global variable for number of ships sunk
-num_of_ships_sunk = 0
-# Global variable for ship positions
-ship_positions = [[]]
-# Global variable for alphabet
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+def accept_valid_bullet_placement():
+    global alphabet
+    global grid
+
+    is_valid_placement = False
+    row = -1
+    col = -1
+    while is_valid_placement is False:
+        placement = input("Enter row (A-Z) and column (0-9 such as A3: ")
+        placement = placement.upper()
+        if len(placement) <= 0 or len(placement) > 2:
+            print("Error: Please enter only one row and column such as A3")
+            continue
+        row = placement[0]
+        col = placement[1]
+        if not row.alpha() or not col.isnumeric():
+            print("Error: Please enter letter (A-J) for row and (0-9) for column")
+            continue
+        row = alphabet.find(row)
+        if not (-1 < grid_size):
+            print("Error: Please enter letter (A-J) for row and (0-9) for column") 
+            continue
+        col = int(col)
+        if not (-1 < col < grid_size):
+            print("Error: Please enter letter (A-J) for row and (0-9) for column")
+            continue
+        if grid[row][col] == "#" or grid[row][col] == "X":
+            print("You have already shot a bullet here, pick somehwere else")
+            continue
+        if grid[row][col] == "." or grid[row][col] == "0":
+            is_valid_placement = True
+
+    return row, 
+
+def check_for_ship_sunk(row, col):
+    global ship_positions
+    global grid
+
+    for position in ship_positions:
+        start_row = position[0]
+        end_row = position[1]
+        start_col = position[2]
+        end_col = position [3]
+        if start_row <= row and start_col <= end_col:
+            for r in range(start_row, end_row):
+                for c in range(start_col, end_col):
+                    if grid[r][c] != "X":
+                        return False 
+    return True
+
+def shoot_bullet():
+    global grid
+    global num_of_ships_sunk
+    global bullets_left
+
+    row, col = accept_valid_bullet_placement()
+    print("")
+    print("-----------------------")
+
+    if grid[row][col] == ".":
+        print("You missed")
+        grid[row][col] == "#"
+    elif grid[row][col] == "0":
+        print("You hit!", end=" ")
+        grid[row][col] = "X"
+        if check_for_ship_sunk(row, col):
+            print("A ship was completely sunk!")
+            num_of_ships_sunk += 1
+        else:
+            print("A ship was shot")
+
+    bullets_left -= 1
+
+def check_for_game_over():
+    global num_of_ships_sunk
+    global num_of_ships
+    global bullets_left
+    global game_over
+
+    if num_of_ships == num_of_ships_sunk:
+        print("Congrats you won!")
+        game_over = True
+    elif bullets_left <= 0:
+        print("Sorry, you lost!")
+        game_over = True
+
 
 def main():
-    battle_intro()
-    enter_battle_perimeter()
+    global game_over
+
+    print("------Welcome to OffGrid!-------")
+    print("You have 50 bullets")
+
     create_grid()
-    print_grid()
-    
+
+    while game_over is False:
+        print_grid()
+        print("Number of ships left: " + str(num_of_ships - num_of_ships_sunk))
+        print("Number of bullets left: " + str(bullets_left))
+        shoot_bullet()
+        print("------------------")
+        print("")
+        check_for_game_over()
     
 
 if __name__ == '__main__':
