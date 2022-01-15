@@ -44,6 +44,32 @@ def create_grid():
             linked_word = get_random_word(ship_size)
             linked_words.append({'row': random_row, 'col': random_col, 'word': linked_word})
 
+def print_grid():
+    """Will print the grid with rows A-J and columns 0-9"""
+    global grid
+    global alphabet
+
+    debug_mode = True
+
+    alphabet = alphabet[0: len(grid) + 1]
+
+    for row in range(len(grid)):
+        print(alphabet[row], end=") ")
+        for col in range(len(grid[row])):
+            if grid[row][col] == "O":
+                if debug_mode:
+                    print("O", end=" ")
+                else:
+                    print(".", end=" ")
+            else:
+                print(grid[row][col], end=" ")
+        print("")
+
+    print("  ", end=" ")
+    for i in range(len(grid[0])):
+        print(str(i), end=" ")
+    print("")
+
 def main():
     battle_intro()
     enter_battle_perimeter()
