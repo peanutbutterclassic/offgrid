@@ -7,8 +7,12 @@ def battle_intro():
     else:
         print(f"Hello {name.capitalize()}, aren't you too young.")
 
+def enter_battle_perimeter():
+    print("YOU ARE ENTERING THE BATTLE PERIMETER!\n")
+
 def main():
     battle_intro()
+    enter_battle_perimeter()
 
 
 if __name__ == '__main__':
